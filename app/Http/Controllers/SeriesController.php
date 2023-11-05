@@ -28,16 +28,28 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {
-        $nomeSerie = $request->input('nome');
+        //$nomeSerie = $request->input('nome');
 
         // 1- Primeira forma de salvar no BD
         //DB::insert('INSERT INTO series (nome) VALUES (?)', [$nomeSerie]);
         
-        // 2- Segunda forma de salvar no BD
+        /*
+        2- Segunda forma de salvar no BD
         $serie = new Serie();
         $serie->nome = $nomeSerie;
         $serie->save();
+        */
 
-        return redirect('/series');
+        // Busca todos os dados, porém filtra no $fillable no Model
+        Serie::create($request->all());
+
+        // Busca somente o campo nome
+        //Serie::create($request->only(['nome']));
+
+        // Busca todos os campos com exceção do token 
+        //Serie::create($request->except(['_token']));
+
+        //return redirect()->route('series.index'); - Também funciona
+        return to_route('series.index');
     }
 }
