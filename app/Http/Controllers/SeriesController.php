@@ -52,4 +52,11 @@ class SeriesController extends Controller
         //return redirect()->route('series.index'); - Também funciona
         return to_route('series.index');
     }
+
+    public function destroy(Request $request)
+    {
+        Serie::destroy($request->id);
+
+        return to_route('series.index');
+    }
 }

@@ -18,11 +18,16 @@ Route::get('/', function () {
     return redirect('/series');
 });
 
-Route::resource('/series', SeriesController::class);
+Route::resource('/series', SeriesController::class)
+    ->only(['index', 'create', 'store']);
+
+// Também é possível utilizar no resource 
+Route::delete('/series/destroy/{id}', [SeriesController::class, 'destroy'])
+    ->name('series.destroy');
 
 /* Substituido pelo código acima. - Linha 21.
 Route::controller(SeriesController::class)->group(function() {
     Route::get('/series', 'index')->name('series.index');
-    Route::get('/series/create', 'create')->name('series.create');
+    Route::get('/series/criar', 'create')->name('series.create');
     Route::post('/series/salvar', 'store')->name('series.store');
 }); */
