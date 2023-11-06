@@ -17,8 +17,16 @@ class SeriesController extends Controller
         // O query() retorna uma query pronta e o "get()" está executando esta query
         $series = Serie::query()->orderBy('nome', 'desc')->get();
 
+        // Resgatando mensagem de sucesso na sessão
+        //$mensagemSucesso = $request->session()->has(); // has() verifica se o dado existe na sessão
+        $mensagemSucesso = $request->session()->get('mensagem.sucesso'); // Resgatando mensagem sem verificar se existe, caso não irá retornar null
+
+        // Removendo a mensagem de sucesso (usando o session()->flash não precisa remover, pois flash() dura apenas 1 request)
+        //$request->session()->forget('mensagem.sucesso');
+
         //return view('listar-series', compact($series));
-        return view('series.index', ['series' => $series]); // Mesma coisa da linha de cima
+        return view('series.index', ['series' => $series])
+            ->with('mensagemSucesso', $mensagemSucesso); // Mesma coisa da linha de cima
     }
 
     public function create()
@@ -41,7 +49,7 @@ class SeriesController extends Controller
         */
 
         // Busca todos os dados, porém filtra no $fillable no Model
-        Serie::create($request->all());
+        $serie = Serie::create($request->all());
 
         // Busca somente o campo nome
         //Serie::create($request->only(['nome']));
@@ -49,13 +57,23 @@ class SeriesController extends Controller
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
 
+        // Criando mensagem na sessão
+        session()->flash('mensagem.sucesso', "Série '{$serie->nome}' criada com sucesso!");
+
         //return redirect()->route('series.index'); - Também funciona
         return to_route('series.index');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Serie $series)
     {
-        Serie::destroy($request->id);
+        //Serie::destroy($request->id);
+        $series->delete();
+
+        // Adicionar mensagem na sessão
+        //$request->session()->put('mensagem.sucesso', 'Série removida com sucesso!');
+
+        // Adicionar dado na sessão com flash(), ao resgatar o dado o memso será removido da sessão automaticamente
+        session()->flash('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!");
 
         return to_route('series.index');
     }

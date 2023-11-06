@@ -22,7 +22,7 @@ Route::resource('/series', SeriesController::class)
     ->only(['index', 'create', 'store']);
 
 // Também é possível utilizar no resource 
-Route::delete('/series/destroy/{id}', [SeriesController::class, 'destroy'])
+Route::delete('/series/destroy/{series}', [SeriesController::class, 'destroy'])
     ->name('series.destroy');
 
 /* Substituido pelo código acima. - Linha 21.
