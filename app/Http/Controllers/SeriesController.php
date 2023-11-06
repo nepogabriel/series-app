@@ -57,11 +57,9 @@ class SeriesController extends Controller
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
 
-        // Criando mensagem na sessão
-        session()->flash('mensagem.sucesso', "Série '{$serie->nome}' criada com sucesso!");
-
         //return redirect()->route('series.index'); - Também funciona
-        return to_route('series.index');
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "Série '{$serie->nome}' criada com sucesso!"); // Utilizando o flash() diretamente no redirecionamento
     }
 
     public function destroy(Serie $series)
@@ -73,8 +71,9 @@ class SeriesController extends Controller
         //$request->session()->put('mensagem.sucesso', 'Série removida com sucesso!');
 
         // Adicionar dado na sessão com flash(), ao resgatar o dado o memso será removido da sessão automaticamente
-        session()->flash('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!");
+        //session()->flash('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!");
 
-        return to_route('series.index');
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!"); // Utilizando o flash() diretamente no redirecionamento
     }
 }
