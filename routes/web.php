@@ -19,7 +19,10 @@ Route::get('/', function () {
 });
 
 Route::resource('/series', SeriesController::class)
-    ->only(['index', 'create', 'store']);
+    ->except(['show']);
+
+//Route::resource('/series', SeriesController::class)
+    //->only(['index', 'create', 'store', 'edit', 'update']);
 
 // Também é possível utilizar no resource 
 Route::delete('/series/destroy/{series}', [SeriesController::class, 'destroy'])

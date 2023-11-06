@@ -36,6 +36,10 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nome' => ['required', 'min:3']
+        ]);
+
         //$nomeSerie = $request->input('nome');
 
         // 1- Primeira forma de salvar no BD
@@ -75,5 +79,25 @@ class SeriesController extends Controller
 
         return to_route('series.index')
             ->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!"); // Utilizando o flash() diretamente no redirecionamento
+    }
+
+    public function edit(Serie $series)
+    {
+        return view('series.edit')->with('series', $series);
+    }
+
+    public function update(Serie $series, Request $request)
+    {
+        /*
+        $series->nome = $request->nome;
+        */
+
+        // É necessário o $fillable para funcionar
+        $series->fill($request->all());
+        $series->save();
+        
+
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "Série '{$series->nome}' atualizada com sucesso!");
     }
 }
