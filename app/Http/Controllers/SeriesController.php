@@ -15,7 +15,9 @@ class SeriesController extends Controller
         //$series = Serie::all();
 
         // O query() retorna uma query pronta e o "get()" está executando esta query
-        $series = Serie::query()->orderBy('nome', 'desc')->get();
+        //$series = Serie::query()->orderBy('nome', 'desc')->get();
+
+        $series = Serie::with('temporadas')->get(); // with() neste caso é para trazer o relacionamento com o Model Season (temporadas)
 
         // Resgatando mensagem de sucesso na sessão
         //$mensagemSucesso = $request->session()->has(); // has() verifica se o dado existe na sessão
