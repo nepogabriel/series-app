@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\SeriesFormsRequest;
-use App\Models\Serie;
+use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +17,7 @@ class SeriesController extends Controller
         // O query() retorna uma query pronta e o "get()" está executando esta query
         //$series = Serie::query()->orderBy('nome', 'desc')->get();
 
-        $series = Serie::with('temporadas')->get(); // with() neste caso é para trazer o relacionamento com o Model Season (temporadas)
+        $series = Series::with('season')->get(); // with() neste caso é para trazer o relacionamento com o Model Season (temporadas)
 
         // Resgatando mensagem de sucesso na sessão
         //$mensagemSucesso = $request->session()->has(); // has() verifica se o dado existe na sessão
@@ -56,7 +56,7 @@ class SeriesController extends Controller
         */
 
         // Busca todos os dados, porém filtra no $fillable no Model
-        $serie = Serie::create($request->all());
+        $serie = Series::create($request->all());
 
         // Busca somente o campo nome
         //Serie::create($request->only(['nome']));
@@ -69,7 +69,7 @@ class SeriesController extends Controller
             ->with('mensagem.sucesso', "Série '{$serie->nome}' criada com sucesso!"); // Utilizando o flash() diretamente no redirecionamento
     }
 
-    public function destroy(Serie $series)
+    public function destroy(Series $series)
     {
         //Serie::destroy($request->id);
         $series->delete();
@@ -84,12 +84,12 @@ class SeriesController extends Controller
             ->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso!"); // Utilizando o flash() diretamente no redirecionamento
     }
 
-    public function edit(Serie $series)
+    public function edit(Series $series)
     {
         return view('series.edit')->with('series', $series);
     }
 
-    public function update(Serie $series, SeriesFormsRequest $request)
+    public function update(Series $series, SeriesFormsRequest $request)
     {
         /*
         $series->nome = $request->nome;

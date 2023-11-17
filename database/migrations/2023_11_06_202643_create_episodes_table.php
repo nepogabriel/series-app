@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('episodes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('numero');
-            $table->foreignId('seasons')->constrained();
+            $table->unsignedTinyInteger('number');
+            $table->foreignId('season_id')->constrained()->onDelete('cascade');
 
             // Para não utilizar os timestamps é necessário setar false na model
             //$table->timestamps();

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Serie extends Model
+class Series extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class Serie extends Model
     //protected $with = ['temporadas']; // Sempre que chamar o model Serie também irá o relacionamento com o model Season (temporadas)
 
     // Fazendo relacionamento com a model de temporada 1-n (1 sério - muitas temporadas)
-    public function temporadas()
+    public function season()
     {
         return $this->hasMany(Season::class, 'series_id', 'id');
     }
