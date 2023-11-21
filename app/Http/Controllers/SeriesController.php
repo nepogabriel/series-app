@@ -61,34 +61,39 @@ class SeriesController extends Controller
         $serie->save();
         */
 
-        // Busca todos os dados, porém filtra no $fillable no Model
-        $serie = Series::create($request->all());
-
+        
         // Busca somente o campo nome
         //Serie::create($request->only(['nome']));
 
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
 
-        $seasons = [];
-        for ($i = 1; $i <= $request->seasonsQty; $i++) {
-            $seasons[] = [
-                'series_id' => $serie->id,
-                'number' => $i,
-            ];
-        }
-        Season::insert($seasons);
+        $serie = DB::transaction(function() use($request, &$serie) {
+            // Busca todos os dados, porém filtra no $fillable no Model
+            $serie = Series::create($request->all());
 
-        $episodes = [];
-        foreach ($serie->seasons as $season) {
-            for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
-                $episodes[] = [
-                    'season_id' => $season->id,
-                    'number' => $j,
+            $seasons = [];
+            for ($i = 1; $i <= $request->seasonsQty; $i++) {
+                $seasons[] = [
+                    'series_id' => $serie->id,
+                    'number' => $i,
                 ];
             }
-        }
-        Episode::insert($episodes);
+            Season::insert($seasons);
+
+            $episodes = [];
+            foreach ($serie->seasons as $season) {
+                for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
+                    $episodes[] = [
+                        'season_id' => $season->id,
+                        'number' => $j,
+                    ];
+                }
+            }
+            Episode::insert($episodes);
+
+            return $serie;
+        }, 5); // esse parâmetro "5" é chamado de deadlock, ou seja, quantas vezes irá tentar executar essa transação
 
         /* Substituido pelo código acima (Reduzindo muito a quantidade de queries executadas)
         for ($i = 1; $i <= $request->seasonsQty; $i++) {
