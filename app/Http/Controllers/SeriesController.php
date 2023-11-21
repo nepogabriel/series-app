@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\SeriesFormsRequest;
+use App\Models\Episode;
+use App\Models\Season;
 use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +70,27 @@ class SeriesController extends Controller
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
 
+        $seasons = [];
+        for ($i = 1; $i <= $request->seasonsQty; $i++) {
+            $seasons[] = [
+                'series_id' => $serie->id,
+                'number' => $i,
+            ];
+        }
+        Season::insert($seasons);
+
+        $episodes = [];
+        foreach ($serie->seasons as $season) {
+            for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
+                $episodes[] = [
+                    'season_id' => $season->id,
+                    'number' => $j,
+                ];
+            }
+        }
+        Episode::insert($episodes);
+
+        /* Substituido pelo código acima (Reduzindo muito a quantidade de queries executadas)
         for ($i = 1; $i <= $request->seasonsQty; $i++) {
             $season = $serie->seasons()->create([
                 'number' => $i,
@@ -78,7 +101,7 @@ class SeriesController extends Controller
                     'number' => $j,
                 ]);
             }
-        }
+        }*/
 
         //return redirect()->route('series.index'); - Também funciona
         return to_route('series.index')
