@@ -15,7 +15,7 @@ class Series extends Model
     //protected $with = ['temporadas']; // Sempre que chamar o model Serie também irá o relacionamento com o model Season (temporadas)
 
     // Fazendo relacionamento com a model de temporada 1-n (1 sério - muitas temporadas)
-    public function season()
+    public function seasons()
     {
         return $this->hasMany(Season::class, 'series_id', 'id');
     }

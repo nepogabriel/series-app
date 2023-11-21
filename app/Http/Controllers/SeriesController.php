@@ -17,7 +17,7 @@ class SeriesController extends Controller
         // O query() retorna uma query pronta e o "get()" está executando esta query
         //$series = Serie::query()->orderBy('nome', 'desc')->get();
 
-        $series = Series::with('season')->get(); // with() neste caso é para trazer o relacionamento com o Model Season (temporadas)
+        $series = Series::with('seasons')->get(); // with() neste caso é para trazer o relacionamento com o Model Season (temporadas)
 
         // Resgatando mensagem de sucesso na sessão
         //$mensagemSucesso = $request->session()->has(); // has() verifica se o dado existe na sessão
@@ -38,6 +38,10 @@ class SeriesController extends Controller
 
     public function store(SeriesFormsRequest $request)
     {
+        // Ajuda a debugar
+        //dd($request->all());
+
+
         /* Substituido pelo SeriesFormsRequest
         $request->validate([
             'nome' => ['required', 'min:3']
@@ -63,6 +67,18 @@ class SeriesController extends Controller
 
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
+
+        for ($i = 1; $i <= $request->seasonsQty; $i++) {
+            $season = $serie->seasons()->create([
+                'number' => $i,
+            ]);
+
+            for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
+                $season->episodes()->create([
+                    'number' => $j,
+                ]);
+            }
+        }
 
         //return redirect()->route('series.index'); - Também funciona
         return to_route('series.index')
