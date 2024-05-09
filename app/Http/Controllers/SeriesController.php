@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\SeriesFormsRequest;
-use App\Models\Episode;
-use App\Models\Season;
 use App\Models\Series;
+use App\Repositories\SeriesRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
+
+    public function __construct(private SeriesRepository $repository)
+    {
+    }
+
     public function index(Request $request)
     {
         //$series = DB::select('SELECT nome FROM series');
@@ -68,32 +71,7 @@ class SeriesController extends Controller
         // Busca todos os campos com exceção do token 
         //Serie::create($request->except(['_token']));
 
-        $serie = DB::transaction(function() use($request, &$serie) {
-            // Busca todos os dados, porém filtra no $fillable no Model
-            $serie = Series::create($request->all());
-
-            $seasons = [];
-            for ($i = 1; $i <= $request->seasonsQty; $i++) {
-                $seasons[] = [
-                    'series_id' => $serie->id,
-                    'number' => $i,
-                ];
-            }
-            Season::insert($seasons);
-
-            $episodes = [];
-            foreach ($serie->seasons as $season) {
-                for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
-                    $episodes[] = [
-                        'season_id' => $season->id,
-                        'number' => $j,
-                    ];
-                }
-            }
-            Episode::insert($episodes);
-
-            return $serie;
-        }, 5); // esse parâmetro "5" é chamado de deadlock, ou seja, quantas vezes irá tentar executar essa transação
+        $serie = $this->repository->add($request);
 
         /* Substituido pelo código acima (Reduzindo muito a quantidade de queries executadas)
         for ($i = 1; $i <= $request->seasonsQty; $i++) {
