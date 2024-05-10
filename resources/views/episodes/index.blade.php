@@ -6,7 +6,10 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Episódio {{ $episode->number }}
             
-                    <input type="checkbox" name="episodes[]" value="{{ $episode->id }}">
+                    <input type="checkbox"
+                            name="episodes[]"
+                            value="{{ $episode->id }}"
+                            @if($episode->watched) checked @endif/>
                 </li>
             @endforeach
         </ul>

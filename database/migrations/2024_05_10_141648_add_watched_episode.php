@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('episodes', function (Blueprint $table) {
-            //
+            $table->boolean('watched')->default(false);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('episodes', function (Blueprint $table) {
-            //
+            $table->dropColumn('watched');
         });
     }
 };
